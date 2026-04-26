@@ -17,7 +17,6 @@ export default function Room({ roomId, children }: Props) {
         name: "",
         color: "",
       }}
-      authEndpoint="/api/liveblocks-auth"
     >
       {children}
     </RoomProvider>
