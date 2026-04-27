@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { useRef, useEffect } from 'react';
-import MonacoEditor, { OnMount, OnChange } from '@monaco-editor/react';
-import { Language } from '@/types';
-import { getMonacoLanguage } from '@/lib/utils';
-import * as monaco from 'monaco-editor';
+import { useRef } from "react";
+import MonacoEditor, { OnMount, OnChange } from "@monaco-editor/react";
+import { Language } from "@/types";
+import { getMonacoLanguage } from "@/lib/utils";
 
 type Props = {
   code: string;
@@ -13,58 +12,62 @@ type Props = {
   readOnly?: boolean;
 };
 
-export default function Editor({ code, language, onChange, readOnly = false }: Props) {
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+export default function Editor({
+  code,
+  language,
+  onChange,
+  readOnly = false,
+}: Props) {
+  const editorRef = useRef<any>(null);
+  const mountedRef = useRef(true);
 
-  // Called once when the editor finishes mounting
-  const handleMount: OnMount = (editor) => {
+  const handleMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
-
-    // Focus the editor automatically when the page loads
     editor.focus();
 
-    // Add keyboard shortcut: Ctrl+S / Cmd+S to trigger save
     editor.addCommand(
       monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
       () => {
-        // Dispatch a custom event that the parent page listens for
-        window.dispatchEvent(new CustomEvent('editor-save'));
+        window.dispatchEvent(new CustomEvent("editor-save"));
       }
     );
+
+    // Mark as unmounted on dispose to suppress cancelation errors
+    editor.onDidDispose(() => {
+      mountedRef.current = false;
+    });
   };
 
   const handleChange: OnChange = (value) => {
-    onChange(value || '');
+    if (mountedRef.current) {
+      onChange(value || "");
+    }
   };
 
   return (
-    
     <MonacoEditor
-      height='100%'
+      height="100%"
       language={getMonacoLanguage(language)}
       value={code}
-      theme='vs-dark'
+      theme="vs-dark"
       onChange={handleChange}
       onMount={handleMount}
       options={{
         fontSize: 14,
-        fontFamily: 'var(--font-geist-mono), monospace',
-        fontLigatures: true,
-        lineNumbers: 'on',
+        fontFamily: "monospace",
+        lineNumbers: "on",
         minimap: { enabled: false },
         scrollBeyondLastLine: false,
-        wordWrap: 'on',
+        wordWrap: "on",
         tabSize: 2,
-        automaticLayout: true, // resizes editor when container resizes
+        automaticLayout: true,
         readOnly,
         padding: { top: 16, bottom: 16 },
         smoothScrolling: true,
-        cursorBlinking: 'smooth',
-        renderLineHighlight: 'line',
+        cursorBlinking: "smooth",
+        renderLineHighlight: "line",
         bracketPairColorization: { enabled: true },
       }}
     />
-  
   );
-  
 }
