@@ -93,7 +93,7 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label className=" text-sm font-medium mb-1.5">
+            <label className="block text-sm font-medium mb-1.5">
               Email address
             </label>
             <input
@@ -127,7 +127,7 @@ export default function SignUpPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full hover:cursor-pointer" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />

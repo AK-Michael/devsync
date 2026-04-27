@@ -121,7 +121,7 @@ function SessionContent({ session: initialSession }: { session: Session }) {
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors text-xs"
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors text-xs hover:cursor-pointer"
           >
             <ArrowLeft className="w-3 h-3" />
             Dashboard

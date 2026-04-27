@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase";
@@ -10,33 +10,11 @@ import { Code2, Loader2 } from "lucide-react";
 export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
-  const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Force a repaint after autofill
-  useEffect(() => {
-    const handleAnimationStart = (e: AnimationEvent) => {
-      if (e.animationName === 'onAutoFillStart') {
-        const input = e.target as HTMLInputElement;
-        if (input === emailRef.current || input === passwordRef.current) {
-          // Force repaint by temporarily changing and restoring background
-          const originalBackground = input.style.backgroundColor;
-          input.style.backgroundColor = 'transparent';
-          setTimeout(() => {
-            input.style.backgroundColor = originalBackground;
-          }, 10);
-        }
-      }
-    };
-
-    document.addEventListener('animationstart', handleAnimationStart);
-    return () => document.removeEventListener('animationstart', handleAnimationStart);
-  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -78,7 +56,6 @@ export default function LoginPage() {
               Email address
             </label>
             <input
-              ref={emailRef}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -93,7 +70,6 @@ export default function LoginPage() {
               Password
             </label>
             <input
-              ref={passwordRef}
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -109,7 +85,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full hover:cursor-pointer" disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -123,7 +99,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-muted-foreground mt-6">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-primary hover:underline">
+          <Link href="/signup" className="text-primary hover:underline hover:cursor-pointer">
             Sign up free
           </Link>
         </p>

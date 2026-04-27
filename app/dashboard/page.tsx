@@ -65,7 +65,7 @@ export default async function DashboardPage() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-1">
-              Welcome back, {displayName.split(" ")[0]} 👋
+              Welcome back, {displayName.split(" ")[0]} 
             </h1>
             <p className="text-muted-foreground">
               {sessions?.length || 0} session
