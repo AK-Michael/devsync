@@ -63,7 +63,7 @@ export default function Toolbar({
                 className="fixed inset-0 z-10"
                 onClick={() => setShowDropdown(false)}
               />
-              <div className="absolute top-full left-0 mt-1 bg-card border border-border rounded-lg shadow-xl z-20 py-1 min-w-[130px] sm:min-w-[140px]">
+              <div className="absolute top-full left-0 mt-1 bg-black border border-border rounded-lg shadow-xl z-20 py-1 min-w-[130px] sm:min-w-[140px]">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang}
@@ -71,7 +71,7 @@ export default function Toolbar({
                       onLanguageChange(lang);
                       setShowDropdown(false);
                     }}
-                    className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-mono hover:bg-secondary transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-mono hover:bg-secondary transition-colors text-white"
                   >
                     {getLanguageLabel(lang)}
                     {lang === session.language && (
