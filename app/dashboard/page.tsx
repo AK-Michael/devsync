@@ -1,7 +1,5 @@
-"use client";
-
-import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { redirect } from "next/navigation";
 import { formatDate, truncate } from "@/lib/utils";
 import { Session } from "@/types";
 import Link from "next/link";
@@ -9,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Code2, Clock, Globe, Lock, LogOut } from "lucide-react";
 import NewSessionButton from "@/components/NewSessionButton";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Trash2, Loader2 } from "lucide-react";
+import DeleteSessionButton from "@/components/DeleteSessionButton";
 
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -81,6 +76,7 @@ export default async function DashboardPage() {
   );
 }
 
+// SessionCard can stay as Server Component
 function SessionCard({ session }: { session: Session }) {
   return (
     <Link href={`/session/${session.id}`}>
@@ -97,6 +93,7 @@ function SessionCard({ session }: { session: Session }) {
                 <><Lock className="w-3 h-3 mr-1" />Private</>
               )}
             </Badge>
+            {/* Delete button needs to be client component */}
             <DeleteSessionButton sessionId={session.id} />
           </div>
         </div>
@@ -133,6 +130,7 @@ function EmptyState() {
   );
 }
 
+// SignOutButton needs to be a Client Component
 function SignOutButton() {
   return (
     <form action="/api/auth/signout" method="POST">
@@ -141,42 +139,5 @@ function SignOutButton() {
         <span className="hidden sm:inline">Sign out</span>
       </Button>
     </form>
-  );
-}
-
-function DeleteSessionButton({ sessionId }: { sessionId: string }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
-  async function handleDelete(e: React.MouseEvent) {
-    // Stop the click from bubbling up to the Link component
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!confirm("Delete this session? This cannot be undone.")) return;
-
-    setLoading(true);
-
-    await fetch(`/api/session?id=${sessionId}`, {
-      method: "DELETE",
-    });
-
-    setLoading(false);
-    // Refresh the page to show updated list
-    router.refresh();
-  }
-
-  return (
-    <button
-      onClick={handleDelete}
-      disabled={loading}
-      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-    >
-      {loading ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-      ) : (
-        <Trash2 className="w-3.5 h-3.5" />
-      )}
-    </button>
   );
 }
