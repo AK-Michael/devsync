@@ -38,7 +38,7 @@ export default function DeleteSessionButton({ sessionId }: { sessionId: string }
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer"
       aria-label="Delete session"
     >
       {loading ? (
