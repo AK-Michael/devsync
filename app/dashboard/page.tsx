@@ -1,3 +1,5 @@
+"use client";
+
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { formatDate, truncate } from "@/lib/utils";
@@ -141,8 +143,6 @@ function SignOutButton() {
     </form>
   );
 }
-
-"use client";
 
 function DeleteSessionButton({ sessionId }: { sessionId: string }) {
   const router = useRouter();
