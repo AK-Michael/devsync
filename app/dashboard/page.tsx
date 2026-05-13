@@ -8,6 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Code2, Clock, Globe, Lock, LogOut } from "lucide-react";
 import NewSessionButton from "@/components/NewSessionButton";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Trash2, Loader2 } from "lucide-react";
+
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient();
 
@@ -83,13 +87,16 @@ function SessionCard({ session }: { session: Session }) {
           <h3 className="font-semibold truncate group-hover:text-primary transition-colors text-sm sm:text-base">
             {truncate(session.title, 25)}
           </h3>
-          <Badge variant="secondary" className="shrink-0 text-xs">
-            {session.is_public ? (
-              <><Globe className="w-3 h-3 mr-1" />Public</>
-            ) : (
-              <><Lock className="w-3 h-3 mr-1" />Private</>
-            )}
-          </Badge>
+          <div className="flex items-center gap-1 shrink-0">
+            <Badge variant="secondary" className="text-xs">
+              {session.is_public ? (
+                <><Globe className="w-3 h-3 mr-1" />Public</>
+              ) : (
+                <><Lock className="w-3 h-3 mr-1" />Private</>
+              )}
+            </Badge>
+            <DeleteSessionButton sessionId={session.id} />
+          </div>
         </div>
 
         <Badge className="mb-3 font-mono text-xs">
@@ -132,5 +139,44 @@ function SignOutButton() {
         <span className="hidden sm:inline">Sign out</span>
       </Button>
     </form>
+  );
+}
+
+"use client";
+
+function DeleteSessionButton({ sessionId }: { sessionId: string }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function handleDelete(e: React.MouseEvent) {
+    // Stop the click from bubbling up to the Link component
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!confirm("Delete this session? This cannot be undone.")) return;
+
+    setLoading(true);
+
+    await fetch(`/api/session?id=${sessionId}`, {
+      method: "DELETE",
+    });
+
+    setLoading(false);
+    // Refresh the page to show updated list
+    router.refresh();
+  }
+
+  return (
+    <button
+      onClick={handleDelete}
+      disabled={loading}
+      className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+    >
+      {loading ? (
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+      ) : (
+        <Trash2 className="w-3.5 h-3.5" />
+      )}
+    </button>
   );
 }
